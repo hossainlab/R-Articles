@@ -1,0 +1,221 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[ignorenonframetext,aspectratio=169]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+\centering
+\begin{beamercolorbox}[sep=16pt,center]{part title}
+  \usebeamerfont{part title}\insertpart\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+\centering
+\begin{beamercolorbox}[sep=12pt,center]{part title}
+  \usebeamerfont{section title}\insertsection\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{part title}
+  \usebeamerfont{subsection title}\insertsubsection\par
+\end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+\usefonttheme{structurebold}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Introduction to Scientific Computing for Biologists},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\newif\ifbibliography
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+\title{Introduction to Scientific Computing for Biologists}
+\providecommand{\subtitle}[1]{}
+\subtitle{ISCB20.09 - Introduction to Data Visualization with R\\
+An Introduction to ggplot2}
+\author{Md. Jubayer Hossain\\
+\url{https://jhossain.me/}~\\
+\href{mailto:jubayer@hdrobd.org}{\nolinkurl{jubayer@hdrobd.org}}}
+\providecommand{\institute}[1]{}
+\institute{Founder\\
+Health Data Research Organization\\
+Lead Organizer\\
+Scientific Computing for Biologists}
+\date{13 March 2021}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}[t]{What is ggplot2?}
+\protect\hypertarget{what-is-ggplot2}{}
+
+\begin{itemize}
+\tightlist
+\item
+  ggplot2 is a data visualization package for the statistical
+  programming language R.
+\item
+  Created by Hadley Wickham in 2005, ggplot2 is an implementation of
+  Leland Wilkinson's Grammar of Graphics---a general scheme for data
+  visualization which breaks up graphs into semantic components such as
+  scales and layers.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[t]{Types of Visualization}
+\protect\hypertarget{types-of-visualization}{}
+
+In statistics, we generally have two kinds of visualization:
+
+\begin{itemize}
+\tightlist
+\item
+  Exploratory data visualization: Exploring the data visually to find
+  patterns among the data entities.
+\item
+  Explanatory data visualization: Showcasing the identified patterns
+  using simple graphs.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[t]{Why Visualization?}
+\protect\hypertarget{why-visualization}{}
+
+``A picture is worth a thousand words''
+
+\begin{itemize}
+\tightlist
+\item
+  Data visualizations make big and small data easier for the human brain
+  to understand, and visualization also makes it easier to detect
+  patterns, trends, and outliers in groups of data.
+\item
+  Good data visualizations should place meaning into complicated
+  datasets so that their message is clear and concise.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[t]{Grammar of Graphics}
+\protect\hypertarget{grammar-of-graphics}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Data - The dataset being plotted
+\item
+  Aesthetics- The scales onto which we plot our data
+\item
+  Geometry - The visual elements used for our data
+\item
+  Facet -Groups by which we divide the data
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[t]{Data Import}
+\protect\hypertarget{data-import}{}
+
+\begin{itemize}
+\tightlist
+\item
+  readr - \url{https://readr.tidyverse.org/}
+\item
+  readxl- \url{https://readxl.tidyverse.org/}
+\item
+  haven - \url{https://haven.tidyverse.org/}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[t]{Data Manipulation}
+\protect\hypertarget{data-manipulation}{}
+
+\begin{itemize}
+\tightlist
+\item
+  tidyr- \url{https://tidyr.tidyverse.org/}
+\item
+  dplyr- \url{https://dplyr.tidyverse.org/}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{পাইথন এবং আর}
+\protect\hypertarget{ux9aaux9beux987ux9a5ux9a8-ux98fux9acux982-ux986ux9b0}{}
+
+\end{frame}
+
+\begin{frame}[t]{Data Sources}
+\protect\hypertarget{data-sources}{}
+
+\begin{itemize}
+\tightlist
+\item
+  \url{https://genome.ucsc.edu/}
+\item
+  \url{https://www.ensembl.org/index.html}
+\item
+  \url{https://www.encodeproject.org/}
+\end{itemize}
+
+\end{frame}
+
+\end{document}

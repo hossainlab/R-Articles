@@ -1,0 +1,294 @@
+---
+title: "Genomic Data Visualization using R"
+author: "Jubayer Hossain"
+date: "23 February, 2021"
+output:
+  html_document:
+    toc: true
+    toc_depth: 6
+    toc_float: true
+    theme: flatly
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment=NA)
+```
+
+## What is ggplot2?
+- ggplot2 is a data visualization package for the statistical programming language R.
+- Created by Hadley Wickham in 2005, ggplot2 is an implementation of Leland Wilkinson’s Grammar of Graphics—a general scheme for data visualization which breaks up graphs into semantic components such as scales and layers.
+
+## Types of Visualization
+In statistics, we generally have two kinds of visualization:
+
+- Exploratory data visualization: Exploring the data visually to find patterns among the data entities.
+- Explanatory data visualization: Showcasing the identified patterns using simple graphs.
+
+## Why Visualization?
+“A picture is worth a thousand words”
+
+- Data visualizations make big and small data easier for the human brain to understand, and visualization also makes it easier to detect patterns, trends, and outliers in groups of data.
+- Good data visualizations should place meaning into complicated datasets so that their message is clear and concise.
+
+## Grammar of Graphics
+- Data - The dataset being plotted
+- Aesthetics- The scales onto which we plot our data
+- Geometry - The visual elements used for our data
+- Facet	-Groups by which we divide the data
+
+## Load Packages and Set Theme
+```{r, pkg, message=FALSE}
+library(tidyverse) 
+library(gridExtra) 
+theme_set(theme_gray(base_size = 18))
+```
+
+## Load Data 
+```{r}
+data <- read.csv("variants_from_assembly.bed", sep="\t", stringsAsFactors = TRUE, header = FALSE, quote = '')
+```
+
+## Exploring Data 
+```{r, head}
+# examine first few rows 
+head(data) 
+```
+
+```{r, colnames}
+# Colnames 
+names(data) <-  c("chrom", "start", "stop", "name", "size", "strand", "type", "ref.dist", "query.dist")
+```
+
+```{r, check}
+head(data) 
+```
+
+```{r, ds}
+# Data Structures
+glimpse(data)
+```
+
+```{r}
+# Summary 
+summary(data)
+```
+
+## Bar Chart 
+```{r}
+ggplot(data, aes(x=chrom))+
+  geom_bar()
+```
+
+```{r}
+# Filtering Data 
+data <- filter(data, chrom %in% c(seq(1,22), "X", "Y", "MT"))
+ggplot(data, aes(x=chrom))+
+  geom_bar()
+```
+
+```{r}
+# Ordering Chromosomes
+data$chrom <- factor(data$chrom, levels=c(seq(1,22),"X","Y","MT"))
+ggplot(data, aes(x=chrom))+
+  geom_bar()
+```
+
+```{r}
+# Xlab, Ylab, Title
+ggplot(data, aes(x=chrom))+
+  geom_bar()+
+  labs(title = "Chromosomes Distribution", 
+       x="Chromosomes", 
+       y= "Counts")
+```
+
+
+```{r}
+# Centering title 
+ggplot(data, aes(x=chrom))+
+  geom_bar()+
+  labs(title = "Chromosomes Distribution",
+       x="Chromosomes", 
+       y= "Counts")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+```{r}
+# Color by categorical variable 
+ggplot(data, aes(x=chrom, fill=type))+
+  geom_bar()+
+  labs(title = "Chromosomes Distributions", 
+       x="Chromosomes", 
+       y= "Counts")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+# Ordering type 
+data$type <- factor(data$type, levels = c("Insertion","Deletion",                          "Expansion","Contraction"))
+```
+
+
+```{r}
+# Color by categorical variable 
+ggplot(data, aes(x=chrom, fill=type))+
+  geom_bar()+
+  labs(title = "Chromosomes Distributions", 
+       x="Chromosomes", 
+       y= "Counts")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+```{r}
+# Color by categorical variable 
+ggplot(data, aes(x=chrom, fill=type))+
+  geom_bar()+
+  labs(title = "Chromosomes Distributions", 
+       x="Chromosomes", 
+       y= "Counts")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  guides(fill=guide_legend(title = "Type"))
+```
+
+```{r}
+fig <- function(width, heigth){
+     options(repr.plot.width = width, repr.plot.height = heigth)
+}
+```
+
+
+```{r}
+# Facet Wrap 
+ggplot(data, aes(x=chrom, fill=type))+
+  geom_bar()+
+  labs(title = "Chromosomes Distributions", 
+       x="Chromosomes", 
+       y= "Counts")+
+  guides(fill=guide_legend(title = "Type"))+
+  facet_wrap(~type)+
+  fig(20,6)
+```
+
+
+```{r}
+# Facet Grid 
+ggplot(data, aes(x=chrom, fill=type))+
+  geom_bar()+
+  labs(title = "Chromosomes Distributions", 
+       x="Chromosomes", 
+       y= "Counts")+
+  guides(fill=guide_legend(title = "Type"))+
+  facet_grid(type ~ .)+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+## Scatter Plot 
+
+```{r}
+ggplot(data, aes(x=ref.dist, y=query.dist))+
+  geom_point()
+```
+
+```{r}
+ggplot(data, aes(x=ref.dist, y=query.dist, color=type))+
+  geom_point()+
+  xlim(-500, 500)+
+  ylim(-500, 500)
+```
+
+## Boxplot 
+
+```{r}
+ggplot(data, aes(x=type, y=size))+
+  geom_boxplot()
+
+```
+```{r}
+ggplot(data, aes(x=type, y=size))+
+  geom_boxplot()+
+  coord_flip()
+```
+
+## Violin Plot 
+
+```{r}
+ggplot(data, aes(x=type, y=size))+
+  geom_violin()
+```
+```{r}
+ggplot(data, aes(x=type, y=size))+
+  geom_violin()+
+  coord_flip()
+```
+```{r}
+ggplot(data, aes(x=type, y=size))+
+  geom_violin(adjust=0.2)+
+  scale_y_log10()+
+  coord_flip()
+```
+
+
+## Desnsity Plot 
+```{r}
+ggplot(data, aes(x=size, fill=type))+
+  geom_density(alpha=0.5)+
+  xlim(0,500)
+```
+```{r}
+ggplot(data, aes(x=size, fill=type))+
+  geom_density(alpha=0.5)+
+  xlim(0,500)+
+  facet_wrap(~type)
+```
+
+```{r}
+ggplot(data, aes(x=size, fill=type))+
+  geom_density(alpha=0.5)+
+  xlim(0,500)+
+  facet_grid(type ~ .)
+```
+```{r}
+ggplot(data, aes(x=size, fill=type))+
+  geom_density(alpha=0.5)+
+  xlim(0,500)+
+  facet_grid(. ~type)
+```
+```{r}
+
+ggplot(data, aes(x=size, fill=type))+
+  geom_density(alpha=0.5)+
+  xlim(0,500)+
+  facet_grid(type ~chrom)
+```
+
+## Pie Chart 
+```{r}
+type_counts <- summary(data$type)
+pie(type_counts)
+```
+
+
+## Arrange Plot 
+```{r}
+f1 <- ggplot(data, aes(x=chrom,fill=type))+ 
+  geom_bar()+
+  labs(title = "Distribution of Chromosomes",
+       x="Chromosomes", y="Counts", 
+       tag = "A")+
+  guides(fill=guide_legend(title = "Type"))
+
+f2 <- ggplot(data, aes(x=size, fill=type))+
+  geom_density(alpha=0.5)+
+  xlim(0,500)+
+  labs(title = "Density Plot of Size", 
+       x = "Size", 
+       y = "Probability", 
+       tag = "B")+
+  guides(fill=guide_legend(title = "Type"))
+
+
+  grid.arrange(f1, f2, nrow=2, ncol=1)
+```
